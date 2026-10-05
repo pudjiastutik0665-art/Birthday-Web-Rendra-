@@ -160,7 +160,7 @@ function Index() {
             key={floater.c + floater.pos}
             aria-hidden
             className={`absolute ${floater.pos}`}
-            animate={reduceMotion ? undefined : { y: [0, -15, 0], rotate: [0, 7, 0] }}
+            animate={reduceMotion ? false : { y: [0, -15, 0], rotate: [0, 7, 0] }}
             transition={{ duration: 5, repeat: Infinity, delay: floater.d, ease: "easeInOut" }}
           >
             {floater.c}
@@ -174,7 +174,7 @@ function Index() {
               width={1024}
               height={1024}
               className="h-full w-full object-contain drop-shadow-xl"
-              animate={reduceMotion ? undefined : { y: [0, -8, 0], rotate: [0, 2, 0, -2, 0] }}
+              animate={reduceMotion ? false : { y: [0, -8, 0], rotate: [0, 2, 0, -2, 0] }}
               transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
             />
           </motion.div>
@@ -190,7 +190,7 @@ function Index() {
           <motion.a
             variants={reveal}
             transition={{ ...motionTransition, type: "spring", stiffness: 300, damping: 18 }}
-            whileHover={reduceMotion ? undefined : { y: -7, scale: 1.04 }}
+            whileHover={reduceMotion ? {} : { y: -7, scale: 1.04 }}
             whileTap={{ scale: 0.94 }}
             href="#reasons"
             className="sparkle-button mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 font-bold text-primary-foreground shadow-soft focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40"
@@ -217,7 +217,7 @@ function Index() {
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.18 }}
                 transition={{ ...motionTransition, delay: index * 0.05, type: "spring", stiffness: 180, damping: 18 }}
-                whileHover={reduceMotion ? undefined : { y: -9, scale: 1.025, rotate: index % 2 ? 0.5 : -0.5 }}
+                whileHover={reduceMotion ? {} : { y: -9, scale: 1.025, rotate: index % 2 ? 0.5 : -0.5 }}
                 className="memory-card group relative overflow-hidden rounded-3xl border-2 border-secondary bg-card p-8 shadow-sm"
               >
                 <span aria-hidden className="card-sparkle left-5 top-4">✦</span>
@@ -247,7 +247,7 @@ function Index() {
                   whileInView="visible"
                   viewport={{ once: true, amount: 0.15 }}
                   transition={{ ...motionTransition, delay: index * 0.06 }}
-                  whileHover={reduceMotion ? undefined : { y: -6, scale: 1.015 }}
+                  whileHover={reduceMotion ? {} : { y: -6, scale: 1.015 }}
                   className="gallery-photo group relative break-inside-avoid overflow-hidden rounded-3xl border-4 border-card shadow-soft"
                 >
                   <img src={photo.src} alt={photo.alt} width={photo.w} height={photo.h} loading="lazy" className="h-auto w-full transition-transform duration-700 ease-out group-hover:scale-110" />
