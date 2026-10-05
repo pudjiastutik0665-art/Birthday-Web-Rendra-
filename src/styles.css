@@ -76,6 +76,62 @@
     var(--background);
 }
 
+.cloud-shape {
+  position: relative;
+  height: 4.5rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--card) 88%, var(--accent));
+  box-shadow: 0 14px 36px color-mix(in oklab, var(--accent) 30%, transparent);
+}
+
+.cloud-shape::before,
+.cloud-shape::after {
+  content: "";
+  position: absolute;
+  bottom: 1.25rem;
+  border-radius: 999px;
+  background: inherit;
+}
+
+.cloud-shape::before { left: 18%; width: 34%; aspect-ratio: 1; }
+.cloud-shape::after { right: 15%; width: 44%; aspect-ratio: 1; }
+
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  right: 1.2rem;
+  bottom: -0.55rem;
+  width: 1rem;
+  height: 1rem;
+  background: var(--card);
+  border-right: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: rotate(45deg);
+}
+
+.memory-card { transition: border-color 250ms ease, box-shadow 250ms ease; }
+.memory-card:hover { border-color: color-mix(in oklab, var(--primary) 50%, var(--secondary)); box-shadow: var(--shadow-soft); }
+.card-sparkle { position: absolute; color: var(--primary); opacity: 0; transform: scale(0) rotate(-30deg); transition: opacity 220ms ease, transform 360ms cubic-bezier(.34,1.56,.64,1); }
+.memory-card:hover .card-sparkle { opacity: 1; transform: scale(1) rotate(15deg); }
+
+.sparkle-button { position: relative; isolation: isolate; }
+.sparkle-button::before,
+.sparkle-button::after {
+  position: absolute;
+  z-index: -1;
+  color: var(--primary);
+  opacity: 0;
+  transition: 250ms ease;
+}
+.sparkle-button::before { content: "✦"; left: -1.25rem; top: -0.5rem; }
+.sparkle-button::after { content: "✧"; right: -1.15rem; bottom: -0.35rem; }
+.sparkle-button:hover::before,
+.sparkle-button:hover::after { opacity: 1; transform: scale(1.35) rotate(20deg); }
+
+.gallery-overlay {
+  background: linear-gradient(135deg, color-mix(in oklab, var(--primary) 30%, transparent), color-mix(in oklab, var(--accent) 45%, transparent));
+}
+
 @keyframes floaty {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50% { transform: translateY(-18px) rotate(8deg); }
@@ -85,4 +141,11 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-floaty { animation: none; }
   html { scroll-behavior: auto; }
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+
+@media (max-width: 639px) {
+  .cloud-shape { height: 3.25rem; }
+  .gallery-overlay { opacity: 0; }
+  .gallery-photo:active .gallery-overlay { opacity: 1; }
 }

@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { Heart, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import cinnamoroll from "@/assets/cinnamoroll-wave.png";
 import g1 from "@/assets/g1.jpg";
 import g2 from "@/assets/g2.jpg";
 import g3 from "@/assets/g3.jpg";
@@ -36,117 +39,235 @@ const photos = [
 ];
 
 const floaters = [
-  { c: "💗", pos: "top-[12%] left-[8%] text-4xl", d: "0s" },
-  { c: "🎀", pos: "top-[20%] right-[10%] text-5xl", d: "1s" },
-  { c: "✨", pos: "bottom-[22%] left-[14%] text-3xl", d: "2s" },
-  { c: "🎈", pos: "bottom-[14%] right-[16%] text-5xl", d: "0.5s" },
-  { c: "💕", pos: "top-[45%] right-[4%] text-3xl hidden sm:block", d: "1.5s" },
+  { c: "💗", pos: "top-[13%] left-[7%] text-3xl sm:text-4xl", d: 0 },
+  { c: "🎀", pos: "top-[21%] right-[9%] text-4xl sm:text-5xl", d: 0.8 },
+  { c: "✨", pos: "bottom-[19%] left-[12%] text-2xl sm:text-3xl", d: 1.6 },
+  { c: "🎈", pos: "bottom-[15%] right-[14%] text-4xl sm:text-5xl", d: 0.4 },
 ];
 
-function Index() {
-  const root = useRef<HTMLDivElement>(null);
+const cloudPositions = [
+  "left-[-8rem] top-[9%] w-64 opacity-60 sm:w-96",
+  "right-[-7rem] top-[31%] w-52 opacity-70 sm:w-80",
+  "left-[7%] bottom-[8%] w-44 opacity-45 sm:w-64",
+];
+
+const reveal = {
+  hidden: { opacity: 0, y: 34 },
+  visible: { opacity: 1, y: 0 },
+};
+
+function Cloud({ className, delay }: { className: string; delay: number }) {
+  return (
+    <motion.div
+      aria-hidden
+      className={`pointer-events-none absolute ${className}`}
+      animate={{ x: [0, 18, 0], y: [0, -7, 0] }}
+      transition={{ duration: 9 + delay, repeat: Infinity, ease: "easeInOut", delay }}
+    >
+      <div className="cloud-shape" />
+    </motion.div>
+  );
+}
+
+function SparkleBurst({ burst }: { burst: number }) {
+  const particles = ["✨", "💗", "⭐", "🩵", "✨", "💕", "⭐", "💙"];
+  return (
+    <AnimatePresence>
+      {burst > 0 && (
+        <motion.div key={burst} aria-hidden className="pointer-events-none absolute inset-0">
+          {particles.map((particle, index) => {
+            const angle = (index / particles.length) * Math.PI * 2;
+            return (
+              <motion.span
+                key={`${burst}-${index}`}
+                className="absolute left-1/2 top-1/2 text-xl"
+                initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
+                animate={{
+                  x: Math.cos(angle) * (66 + (index % 2) * 22),
+                  y: Math.sin(angle) * (66 + (index % 3) * 12),
+                  scale: [0, 1.15, 0.7],
+                  opacity: [1, 1, 0],
+                  rotate: index % 2 ? 35 : -35,
+                }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.15, ease: "easeOut" }}
+              >
+                {particle}
+              </motion.span>
+            );
+          })}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function FloatingMascot() {
+  const [showBubble, setShowBubble] = useState(false);
+  const [burst, setBurst] = useState(0);
 
   useEffect(() => {
-    let ctx: { revert: () => void } | undefined;
-    (async () => {
-      const { gsap } = await import("gsap");
-      const { ScrollTrigger } = await import("gsap/ScrollTrigger");
-      gsap.registerPlugin(ScrollTrigger);
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduce) return;
-      ctx = gsap.context(() => {
-        gsap.timeline({ defaults: { ease: "power3.out" } })
-          .from(".hero-item", { y: 40, opacity: 0, duration: 0.9, stagger: 0.18 })
-          .from(".floater", { scale: 0, opacity: 0, duration: 0.6, stagger: 0.1 }, "-=0.4");
-        gsap.utils.toArray<HTMLElement>(".reveal").forEach((el, i) => {
-          gsap.from(el, {
-            y: 50, opacity: 0, duration: 0.8, delay: (i % 3) * 0.1, ease: "power2.out",
-            scrollTrigger: { trigger: el, start: "top 88%" },
-          });
-        });
-      }, root);
-    })();
-    return () => ctx?.revert();
-  }, []);
+    if (!showBubble) return;
+    const timer = window.setTimeout(() => setShowBubble(false), 3200);
+    return () => window.clearTimeout(timer);
+  }, [showBubble, burst]);
 
   return (
-    <div ref={root} className="overflow-x-hidden">
-      <header className="bg-hero relative flex min-h-screen items-center justify-center px-6 text-center">
-        {floaters.map((f) => (
-          <span key={f.c + f.pos} aria-hidden className={`floater absolute ${f.pos}`}>
-            <span className="animate-floaty inline-block" style={{ animationDelay: f.d }}>{f.c}</span>
-          </span>
-        ))}
-        <div className="relative max-w-2xl">
-          <p className="hero-item mb-4 inline-block rounded-full border-2 border-primary/40 bg-card/70 px-4 py-1 text-sm font-semibold text-primary">
-            Untuk orang paling spesial 💝
-          </p>
-          <h1 className="hero-item font-display text-5xl leading-tight text-primary sm:text-7xl">
-            Happy Birthday, Sayang!
-          </h1>
-          <p className="hero-item mx-auto mt-6 max-w-md text-lg text-muted-foreground">
-            Hari ini dunia merayakan hadirnya kamu — dan aku merayakan betapa beruntungnya aku memilikimu.
-          </p>
-          <a
-            href="#reasons"
-            className="hero-item mt-10 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 font-bold text-primary-foreground shadow-soft transition-all duration-300 ease-in-out hover:-translate-y-2 hover:shadow-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40"
+    <div className="fixed bottom-3 right-2 z-50 sm:bottom-5 sm:right-5">
+      <AnimatePresence>
+        {showBubble && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.75, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.85, y: 8 }}
+            transition={{ type: "spring", stiffness: 360, damping: 22 }}
+            className="speech-bubble absolute bottom-[88%] right-[72%] w-44 rounded-2xl border-2 border-accent bg-card px-4 py-3 text-center text-sm font-bold text-foreground shadow-soft sm:w-52"
           >
-            Buka Hadiahmu 🎁
-          </a>
-        </div>
+            Semoga harimu semanis awan! 🩵
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <motion.button
+        type="button"
+        aria-label="Sapaan dari Cinnamoroll"
+        className="relative block h-28 w-28 cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 sm:h-36 sm:w-36"
+        animate={{ y: [0, -10, 0], rotate: [0, 1.5, 0, -1.5, 0] }}
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.9 }}
+        transition={{ y: { duration: 3.8, repeat: Infinity, ease: "easeInOut" }, rotate: { duration: 5, repeat: Infinity } }}
+        onClick={() => {
+          setShowBubble(true);
+          setBurst((value) => value + 1);
+        }}
+      >
+        <img src={cinnamoroll} alt="Cinnamoroll melayang di atas awan" width={1024} height={1024} loading="lazy" className="h-full w-full object-contain drop-shadow-xl" />
+        <SparkleBurst burst={burst} />
+      </motion.button>
+    </div>
+  );
+}
+
+function Index() {
+  const reduceMotion = useReducedMotion();
+  const motionTransition = reduceMotion ? { duration: 0 } : { duration: 0.7, ease: "easeOut" as const };
+
+  return (
+    <div className="overflow-x-hidden">
+      <header className="bg-hero relative flex min-h-[92svh] items-center justify-center overflow-hidden px-6 pb-16 pt-8 text-center sm:min-h-screen">
+        {cloudPositions.map((position, index) => <Cloud key={position} className={position} delay={index * 1.4} />)}
+        {floaters.map((floater) => (
+          <motion.span
+            key={floater.c + floater.pos}
+            aria-hidden
+            className={`absolute ${floater.pos}`}
+            animate={reduceMotion ? undefined : { y: [0, -15, 0], rotate: [0, 7, 0] }}
+            transition={{ duration: 5, repeat: Infinity, delay: floater.d, ease: "easeInOut" }}
+          >
+            {floater.c}
+          </motion.span>
+        ))}
+        <motion.div initial="hidden" animate="visible" transition={{ staggerChildren: 0.13 }} className="relative z-10 max-w-2xl">
+          <motion.div variants={reveal} transition={motionTransition} className="mx-auto -mb-2 h-40 w-40 sm:h-52 sm:w-52">
+            <motion.img
+              src={cinnamoroll}
+              alt="Cinnamoroll melambaikan tangan dari atas awan"
+              width={1024}
+              height={1024}
+              className="h-full w-full object-contain drop-shadow-xl"
+              animate={reduceMotion ? undefined : { y: [0, -8, 0], rotate: [0, 2, 0, -2, 0] }}
+              transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </motion.div>
+          <motion.p variants={reveal} transition={motionTransition} className="mb-4 inline-block rounded-full border-2 border-primary/40 bg-card/80 px-4 py-1 text-sm font-semibold text-primary backdrop-blur-sm">
+            Untuk orang paling spesial 💝
+          </motion.p>
+          <motion.h1 variants={reveal} transition={motionTransition} className="font-display text-5xl leading-tight text-primary sm:text-7xl">
+            Happy Birthday, Sayang!
+          </motion.h1>
+          <motion.p variants={reveal} transition={motionTransition} className="mx-auto mt-6 max-w-md text-base text-muted-foreground sm:text-lg">
+            Hari ini dunia merayakan hadirnya kamu — dan aku merayakan betapa beruntungnya aku memilikimu.
+          </motion.p>
+          <motion.a
+            variants={reveal}
+            transition={{ ...motionTransition, type: "spring", stiffness: 300, damping: 18 }}
+            whileHover={reduceMotion ? undefined : { y: -7, scale: 1.04 }}
+            whileTap={{ scale: 0.94 }}
+            href="#reasons"
+            className="sparkle-button mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 font-bold text-primary-foreground shadow-soft focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40"
+          >
+            Buka Hadiahmu <Sparkles aria-hidden className="h-5 w-5" />
+          </motion.a>
+        </motion.div>
       </header>
 
       <main>
-        <section id="reasons" aria-labelledby="reasons-title" className="mx-auto max-w-6xl px-6 py-24">
-          <h2 id="reasons-title" className="reveal text-center font-display text-4xl text-primary sm:text-5xl">
+        <section id="reasons" aria-labelledby="reasons-title" className="relative mx-auto max-w-6xl px-6 py-24">
+          <motion.h2 id="reasons-title" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.25 }} transition={motionTransition} className="text-center font-display text-4xl text-primary sm:text-5xl">
             Alasan Aku Sayang Kamu
-          </h2>
-          <p className="reveal mx-auto mt-4 max-w-md text-center text-muted-foreground">
+          </motion.h2>
+          <motion.p variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true }} transition={motionTransition} className="mx-auto mt-4 max-w-md text-center text-muted-foreground">
             Sebenarnya ada tak terhingga, tapi ini beberapa favoritku.
-          </p>
+          </motion.p>
           <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {reasons.map((r) => (
-              <article
-                key={r.title}
-                className="reveal rounded-3xl border-2 border-secondary bg-card p-8 transition-all duration-300 ease-in-out hover:-translate-y-2 hover:border-primary/50 hover:shadow-xl"
+            {reasons.map((reason, index) => (
+              <motion.article
+                key={reason.title}
+                variants={reveal}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.18 }}
+                transition={{ ...motionTransition, delay: index * 0.05, type: "spring", stiffness: 180, damping: 18 }}
+                whileHover={reduceMotion ? undefined : { y: -9, scale: 1.025, rotate: index % 2 ? 0.5 : -0.5 }}
+                className="memory-card group relative overflow-hidden rounded-3xl border-2 border-secondary bg-card p-8 shadow-sm"
               >
-                <div aria-hidden className="mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-accent text-3xl">
-                  {r.emoji}
+                <span aria-hidden className="card-sparkle left-5 top-4">✦</span>
+                <span aria-hidden className="card-sparkle right-6 top-7 [animation-delay:120ms]">✧</span>
+                <div aria-hidden className="mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-accent text-3xl transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
+                  {reason.emoji}
                 </div>
-                <h3 className="text-xl font-bold text-foreground">{r.title}</h3>
-                <p className="mt-2 leading-relaxed text-muted-foreground">{r.text}</p>
-              </article>
+                <h3 className="text-xl font-bold text-foreground">{reason.title}</h3>
+                <p className="mt-2 leading-relaxed text-muted-foreground">{reason.text}</p>
+              </motion.article>
             ))}
           </div>
         </section>
 
-        <section aria-labelledby="gallery-title" className="bg-secondary/60 px-6 py-24">
-          <div className="mx-auto max-w-6xl">
-            <h2 id="gallery-title" className="reveal text-center font-display text-4xl text-primary sm:text-5xl">
+        <section aria-labelledby="gallery-title" className="relative overflow-hidden bg-secondary/60 px-6 py-24">
+          <Cloud className="-left-24 top-12 w-64 opacity-35" delay={2} />
+          <div className="relative mx-auto max-w-6xl">
+            <motion.h2 id="gallery-title" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true }} transition={motionTransition} className="text-center font-display text-4xl text-primary sm:text-5xl">
               Kenangan Kita
-            </h2>
+            </motion.h2>
             <div className="mt-14 columns-1 gap-6 sm:columns-2 lg:columns-3 [&>*]:mb-6">
-              {photos.map((p) => (
-                <figure key={p.alt} className="reveal group break-inside-avoid overflow-hidden rounded-3xl border-4 border-card shadow-soft">
-                  <img
-                    src={p.src}
-                    alt={p.alt}
-                    width={p.w}
-                    height={p.h}
-                    loading="lazy"
-                    className="h-auto w-full transition-transform duration-700 ease-out group-hover:scale-105"
-                  />
-                </figure>
+              {photos.map((photo, index) => (
+                <motion.figure
+                  key={photo.alt}
+                  variants={reveal}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.15 }}
+                  transition={{ ...motionTransition, delay: index * 0.06 }}
+                  whileHover={reduceMotion ? undefined : { y: -6, scale: 1.015 }}
+                  className="gallery-photo group relative break-inside-avoid overflow-hidden rounded-3xl border-4 border-card shadow-soft"
+                >
+                  <img src={photo.src} alt={photo.alt} width={photo.w} height={photo.h} loading="lazy" className="h-auto w-full transition-transform duration-700 ease-out group-hover:scale-110" />
+                  <div className="gallery-overlay absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-within:opacity-100">
+                    <motion.span aria-hidden initial={{ scale: 0, rotate: -12 }} whileInView={{ scale: 1, rotate: 0 }} className="grid h-16 w-16 place-items-center rounded-full bg-card/85 text-primary shadow-soft backdrop-blur-sm">
+                      <Heart className="h-8 w-8 fill-current" />
+                    </motion.span>
+                  </div>
+                </motion.figure>
               ))}
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="bg-hero px-6 py-20 text-center">
-        <p className="reveal font-display text-3xl text-primary sm:text-4xl">Aku sayang kamu, selamanya.</p>
-        <p className="reveal mt-4 text-muted-foreground">Selamat ulang tahun, cintaku 💗</p>
+      <footer className="bg-hero relative overflow-hidden px-6 py-20 text-center">
+        <motion.p variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true }} transition={motionTransition} className="font-display text-3xl text-primary sm:text-4xl">Aku sayang kamu, selamanya.</motion.p>
+        <motion.p variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true }} transition={motionTransition} className="mt-4 text-muted-foreground">Selamat ulang tahun, cintaku 💗</motion.p>
       </footer>
+      <FloatingMascot />
     </div>
   );
 }
