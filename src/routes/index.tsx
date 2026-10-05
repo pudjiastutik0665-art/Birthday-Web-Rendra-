@@ -1,7 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { ClientOnly, createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Gift, Heart, Sparkles } from "lucide-react";
-import { useEffect, useState, type MouseEvent } from "react";
+import { lazy, Suspense, useEffect, useState, type MouseEvent } from "react";
+
+const Cinnamoroll3D = lazy(() => import("@/components/Cinnamoroll3D"));
 import cinnamoroll from "@/assets/cinnamoroll-wave.png";
 import g1 from "@/assets/g1.jpg";
 import g2 from "@/assets/g2.jpg";
@@ -204,16 +206,12 @@ function Index() {
           </motion.span>
         ))}
         <motion.div initial="hidden" animate="visible" transition={{ staggerChildren: 0.13 }} className="relative z-10 max-w-2xl">
-          <motion.div variants={reveal} transition={motionTransition} className="mx-auto -mb-2 h-40 w-40 sm:h-52 sm:w-52">
-            <motion.img
-              src={cinnamoroll}
-              alt="Cinnamoroll melambaikan tangan dari atas awan"
-              width={1024}
-              height={1024}
-              className="h-full w-full object-contain drop-shadow-xl"
-              animate={reduceMotion ? false : { y: [0, -8, 0], rotate: [0, 2, 0, -2, 0] }}
-              transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
-            />
+          <motion.div variants={reveal} transition={motionTransition} className="mx-auto -mb-2 h-48 w-48 cursor-grab touch-pan-y active:cursor-grabbing sm:h-64 sm:w-64">
+            <ClientOnly fallback={<img src={cinnamoroll} alt="Cinnamoroll" width={1024} height={1024} className="h-full w-full object-contain" />}>
+              <Suspense fallback={<img src={cinnamoroll} alt="Cinnamoroll" width={1024} height={1024} className="h-full w-full object-contain" />}>
+                <Cinnamoroll3D className="h-full w-full" />
+              </Suspense>
+            </ClientOnly>
           </motion.div>
           <motion.p variants={reveal} transition={motionTransition} className="mb-4 inline-block rounded-full border-2 border-primary/40 bg-card/80 px-4 py-1 text-sm font-semibold text-primary backdrop-blur-sm">
             Untuk orang paling spesial ♡
