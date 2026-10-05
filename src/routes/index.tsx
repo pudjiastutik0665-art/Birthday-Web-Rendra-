@@ -105,6 +105,42 @@ function SparkleBurst({ burst }: { burst: number }) {
 function FloatingMascot() {
   const [showBubble, setShowBubble] = useState(false);
   const [burst, setBurst] = useState(0);
+  const reduceMotion = useReducedMotion();
+
+  const fireConfetti = (event: MouseEvent<HTMLButtonElement>) => {
+    if (reduceMotion) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    void import("canvas-confetti").then(({ default: confetti }) => {
+      const origin = {
+        x: (rect.left + rect.width / 2) / window.innerWidth,
+        y: (rect.top + rect.height / 2) / window.innerHeight,
+      };
+      const colors = ["#F875AA", "#FFDFDF", "#AEDEFC", "#FFFFFF"];
+      confetti({
+        particleCount: 90,
+        spread: 75,
+        startVelocity: 34,
+        scalar: 0.9,
+        ticks: 200,
+        origin,
+        colors,
+        shapes: ["circle", "star"],
+      });
+      const heart = confetti.shapeFromPath({
+        path: "M167 72c19,-38 37,-56 75,-56 42,0 76,33 76,75 0,76 -76,151 -151,227 -76,-76 -151,-151 -151,-227 0,-42 33,-75 75,-75 38,0 57,18 76,56z",
+      });
+      confetti({
+        particleCount: 26,
+        spread: 110,
+        startVelocity: 26,
+        scalar: 1.4,
+        ticks: 240,
+        origin,
+        colors: ["#F875AA", "#FFDFDF", "#AEDEFC"],
+        shapes: [heart],
+      });
+    });
+  };
 
   useEffect(() => {
     if (!showBubble) return;
@@ -132,12 +168,13 @@ function FloatingMascot() {
         aria-label="Sapaan dari Cinnamoroll"
         className="relative block h-28 w-28 cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 sm:h-36 sm:w-36"
         animate={{ y: [0, -10, 0], rotate: [0, 1.5, 0, -1.5, 0] }}
-        whileHover={{ scale: 1.08 }}
+        whileHover={reduceMotion ? {} : { scale: 1.08 }}
         whileTap={{ scale: 0.9 }}
         transition={{ y: { duration: 3.8, repeat: Infinity, ease: "easeInOut" }, rotate: { duration: 5, repeat: Infinity } }}
-        onClick={() => {
+        onClick={(event) => {
           setShowBubble(true);
           setBurst((value) => value + 1);
+          fireConfetti(event);
         }}
       >
         <img src={cinnamoroll} alt="Cinnamoroll melayang di atas awan" width={1024} height={1024} loading="lazy" className="h-full w-full object-contain drop-shadow-xl" />
