@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Heart, Sparkles } from "lucide-react";
+import { Gift, Heart, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import cinnamoroll from "@/assets/cinnamoroll-wave.png";
 import g1 from "@/assets/g1.jpg";
@@ -39,10 +39,10 @@ const photos = [
 ];
 
 const floaters = [
-  { c: "💗", pos: "top-[13%] left-[7%] text-3xl sm:text-4xl", d: 0 },
-  { c: "🎀", pos: "top-[21%] right-[9%] text-4xl sm:text-5xl", d: 0.8 },
-  { c: "✨", pos: "bottom-[19%] left-[12%] text-2xl sm:text-3xl", d: 1.6 },
-  { c: "🎈", pos: "bottom-[15%] right-[14%] text-4xl sm:text-5xl", d: 0.4 },
+  { c: "♥", pos: "top-[13%] left-[7%] text-3xl text-primary/45 sm:text-4xl", d: 0 },
+  { c: "✦", pos: "top-[21%] right-[9%] text-4xl text-accent-foreground/35 sm:text-5xl", d: 0.8 },
+  { c: "✧", pos: "bottom-[19%] left-[12%] text-2xl text-primary/45 sm:text-3xl", d: 1.6 },
+  { c: "♡", pos: "bottom-[15%] right-[14%] text-4xl text-primary/35 sm:text-5xl", d: 0.4 },
 ];
 
 const cloudPositions = [
@@ -70,7 +70,7 @@ function Cloud({ className, delay }: { className: string; delay: number }) {
 }
 
 function SparkleBurst({ burst }: { burst: number }) {
-  const particles = ["✨", "💗", "⭐", "🩵", "✨", "💕", "⭐", "💙"];
+  const particles = ["✦", "♥", "★", "♡", "✧", "♥", "★", "✦"];
   return (
     <AnimatePresence>
       {burst > 0 && (
@@ -123,7 +123,7 @@ function FloatingMascot() {
             transition={{ type: "spring", stiffness: 360, damping: 22 }}
             className="speech-bubble absolute bottom-[88%] right-[72%] w-44 rounded-2xl border-2 border-accent bg-card px-4 py-3 text-center text-sm font-bold text-foreground shadow-soft sm:w-52"
           >
-            Semoga harimu semanis awan! 🩵
+            Semoga harimu semanis awan! ♡
           </motion.div>
         )}
       </AnimatePresence>
@@ -179,7 +179,7 @@ function Index() {
             />
           </motion.div>
           <motion.p variants={reveal} transition={motionTransition} className="mb-4 inline-block rounded-full border-2 border-primary/40 bg-card/80 px-4 py-1 text-sm font-semibold text-primary backdrop-blur-sm">
-            Untuk orang paling spesial 💝
+            Untuk orang paling spesial ♡
           </motion.p>
           <motion.h1 variants={reveal} transition={motionTransition} className="font-display text-5xl leading-tight text-primary sm:text-7xl">
             Happy Birthday, Sayang!
@@ -195,7 +195,7 @@ function Index() {
             href="#reasons"
             className="sparkle-button mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 font-bold text-primary-foreground shadow-soft focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/40"
           >
-            Buka Hadiahmu <Sparkles aria-hidden className="h-5 w-5" />
+            <Gift aria-hidden className="h-5 w-5" /> Buka Hadiahmu <Sparkles aria-hidden className="h-5 w-5" />
           </motion.a>
         </motion.div>
       </header>
@@ -265,7 +265,7 @@ function Index() {
 
       <footer className="bg-hero relative overflow-hidden px-6 py-20 text-center">
         <motion.p variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true }} transition={motionTransition} className="font-display text-3xl text-primary sm:text-4xl">Aku sayang kamu, selamanya.</motion.p>
-        <motion.p variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true }} transition={motionTransition} className="mt-4 text-muted-foreground">Selamat ulang tahun, cintaku 💗</motion.p>
+        <motion.p variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true }} transition={motionTransition} className="mt-4 text-muted-foreground">Selamat ulang tahun, cintaku ♡</motion.p>
       </footer>
       <FloatingMascot />
     </div>
