@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Gift, Heart, Sparkles } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import cinnamoroll from "@/assets/cinnamoroll-wave.png";
 import g1 from "@/assets/g1.jpg";
 import g2 from "@/assets/g2.jpg";
