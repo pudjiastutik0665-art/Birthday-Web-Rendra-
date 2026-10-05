@@ -24,7 +24,7 @@ function PlaceholderModel() {
       {/* kepala */}
       <mesh>
         <sphereGeometry args={[1, 48, 48]} />
-        <meshStandardMaterial color="#ffffff" roughness={0.6} />
+        <meshStandardMaterial color="#ffffff" emissive="#fff6f6" emissiveIntensity={0.45} roughness={0.6} />
       </mesh>
       {/* telinga panjang */}
       {[-1, 1].map((s) => (
@@ -50,7 +50,7 @@ function PlaceholderModel() {
       {/* badan */}
       <mesh position={[0, -1.15, 0]} scale={[0.75, 0.6, 0.65]}>
         <sphereGeometry args={[1, 32, 32]} />
-        <meshStandardMaterial color="#ffffff" roughness={0.6} />
+        <meshStandardMaterial color="#ffffff" emissive="#fff6f6" emissiveIntensity={0.45} roughness={0.6} />
       </mesh>
     </group>
   );
@@ -59,7 +59,7 @@ function PlaceholderModel() {
 export default function Cinnamoroll3D({ className = "" }: { className?: string }) {
   return (
     <div className={className}>
-      <Canvas gl={{ alpha: true, antialias: true }} dpr={[1, 2]} camera={{ position: [0, 0, 5], fov: 45 }}>
+      <Canvas gl={{ alpha: true, antialias: true }} dpr={[1, 2]} camera={{ position: [0, 0, 7], fov: 45 }}>
         <ambientLight intensity={0.7} />
         <directionalLight position={[10, 10, 5]} intensity={1} color="#ffdfdf" />
         <directionalLight position={[-6, 2, 4]} intensity={0.4} color="#aedefc" />
