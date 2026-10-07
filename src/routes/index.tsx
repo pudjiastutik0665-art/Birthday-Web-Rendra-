@@ -8,6 +8,7 @@ import g1 from "@/assets/g1.jpg";
 import g2 from "@/assets/g2.jpg";
 import g3 from "@/assets/g3.jpg";
 import g4 from "@/assets/g4.jpg";
+import { BirthdayCake, FallingHearts, LoveCounter, LoveJar, LoveLetter, LoveTimeline, TapHearts } from "@/components/romantic";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -190,7 +191,9 @@ function Index() {
   const motionTransition = reduceMotion ? { duration: 0 } : { duration: 0.7, ease: "easeOut" as const };
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="relative overflow-x-hidden">
+      <FallingHearts />
+      <TapHearts />
       <header className="bg-hero relative flex min-h-[92svh] items-center justify-center overflow-hidden px-6 pb-16 pt-8 text-center sm:min-h-screen">
         {cloudPositions.map((position, index) => <Cloud key={position} className={position} delay={index * 1.4} />)}
         {floaters.map((floater) => (
@@ -291,8 +294,13 @@ function Index() {
             </div>
           </div>
         </section>
-      </main>
 
+        <LoveTimeline />
+        <BirthdayCake />
+        <LoveLetter />
+        <LoveJar />
+        <LoveCounter />
+      </main>
 
       <footer className="bg-hero relative overflow-hidden px-6 py-20 text-center">
         <motion.p variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true }} transition={motionTransition} className="font-display text-3xl text-primary sm:text-4xl">Aku sayang kamu, selamanya.</motion.p>
