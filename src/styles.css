@@ -149,3 +149,32 @@
   .gallery-overlay { opacity: 0; }
   .gallery-photo:active .gallery-overlay { opacity: 1; }
 }
+
+/* ---------- Fitur romantis ---------- */
+@keyframes fall {
+  0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(110vh) translateX(40px) rotate(360deg); opacity: 0; }
+}
+.falling-heart { animation-name: fall; animation-timing-function: linear; animation-iteration-count: infinite; }
+
+/* Kue ulang tahun */
+.cake { position: relative; width: 14rem; height: 12rem; }
+.cake-top, .cake-mid, .cake-base { position: absolute; left: 50%; transform: translateX(-50%); border-radius: 1rem; }
+.cake-top { bottom: 6rem; width: 8rem; height: 3rem; background: var(--primary); box-shadow: inset 0 -10px 0 color-mix(in oklab, var(--card) 70%, transparent); }
+.cake-mid { bottom: 3rem; width: 11rem; height: 3.2rem; background: color-mix(in oklab, var(--primary) 55%, var(--secondary)); }
+.cake-base { bottom: 0; width: 14rem; height: 3.2rem; background: var(--accent); }
+.cake-candles { position: absolute; bottom: 9rem; left: 50%; transform: translateX(-50%); display: flex; gap: 1.2rem; z-index: 2; }
+.candle { position: relative; display: flex; flex-direction: column; align-items: center; }
+.stick { width: 0.5rem; height: 2rem; border-radius: 4px; background: repeating-linear-gradient(45deg, var(--card) 0 4px, var(--accent) 4px 8px); }
+.flame { width: 0.7rem; height: 1.1rem; margin-bottom: 2px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: radial-gradient(circle at 50% 70%, #fff3b0, #ffb347); box-shadow: 0 0 14px 4px rgba(255, 190, 90, 0.6); transition: opacity 0.4s, transform 0.4s; }
+.flame-on { animation: flicker 0.5s ease-in-out infinite alternate; }
+.flame-off { opacity: 0; transform: scale(0.2) translateY(6px); }
+@keyframes flicker { from { transform: scale(1) rotate(-3deg); } to { transform: scale(1.12, 0.94) rotate(3deg); } }
+
+.letter-paper { background-image: repeating-linear-gradient(transparent, transparent 31px, color-mix(in oklab, var(--primary) 12%, transparent) 32px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .falling-heart, .flame-on { animation: none; }
+}
