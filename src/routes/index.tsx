@@ -8,7 +8,6 @@ import g1 from "@/assets/g1.jpg";
 import g2 from "@/assets/g2.jpg";
 import g3 from "@/assets/g3.jpg";
 import g4 from "@/assets/g4.jpg";
-import { WishGenerator } from "@/components/WishGenerator";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -292,9 +291,8 @@ function Index() {
             </div>
           </div>
         </section>
-
-        <WishGenerator />
       </main>
+
 
       <footer className="bg-hero relative overflow-hidden px-6 py-20 text-center">
         <motion.p variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true }} transition={motionTransition} className="font-display text-3xl text-primary sm:text-4xl">Aku sayang kamu, selamanya.</motion.p>
